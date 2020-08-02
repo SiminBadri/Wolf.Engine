@@ -2,7 +2,7 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
 	Website			 : https://WolfEngine.App
-	Name			 : w_std.h
+	Name			 : wolf.h
 	Description		 : std helper functions and some typedefs
 	Comment          :
 */
@@ -16,9 +16,15 @@ extern "C" {
 #ifdef _WIN32
 
     #include <SDKDDKVer.h>
+
     #ifndef WIN32_LEAN_AND_MEAN
-    #define WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
     #endif
+    
+    #ifndef NOMINMAX 
+        #define NOMINMAX 
+    #endif
+
     #include <Windows.h>
 	#include <WinSock2.h>
 	#include <ws2ipdef.h>
@@ -34,8 +40,15 @@ extern "C" {
 
 #endif
 
-#include <apr-1/apr.h>
-#include <apr-1/apr_general.h>
+//http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
+
+//#include <apr.h>
+//#include <apr-1/apr_general.h>
+//#include <apr-1/apr_strings.h>
+//#include <apr-1/apr_tables.h>
+//#include <apr-1/apr_file_io.h>
+//#include <apr-1/apr_hash.h>
+#include <apr-1/apr_errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <wchar.h>
@@ -43,7 +56,7 @@ extern "C" {
 #include <stdint.h>
 #include <assert.h>
 #include <limits.h>
-#include <os/w_platform.h>
+#include "os/w_platform.h"
 
 //#include <errno.h>
 
@@ -53,8 +66,7 @@ extern "C" {
 #define W_SAFE_DELETE_ARRAY(ar)     { if (ar) { delete[] ar; ar = NULL;              } }
 #define W_SAFE_RELEASE(x)           { if (x)  { x->release(); delete x; x = NULL;    } }
 
-#ifdef __cplusplus
-#if defined(__WIN32) && !defined(__WOLF_SYSTEM_STATIC_LIB)
+#if defined(W_PLATFORM_WIN) && !defined(__WOLF_SYSTEM_STATIC_LIB)
     //DLL export
     #ifndef W_SYSTEM_EXPORT
     #define W_SYSTEM_EXPORT __declspec(dllexport)
@@ -64,7 +76,6 @@ extern "C" {
     #ifndef W_SYSTEM_EXPORT
     #define W_SYSTEM_EXPORT
     #endif
-#endif
 #endif
 
 #ifdef _MSC_VER
@@ -81,12 +92,12 @@ extern "C" {
 
 #endif
 
-#ifndef PATH_MAX
-#define PATH_MAX 256
+#ifndef W_PATH_MAX
+#define W_PATH_MAX 256
 #endif
 
-#ifndef MAX_BUFFER_SIZE
-#define MAX_BUFFER_SIZE 4096
+#ifndef W_MAX_BUFFER_SIZE
+#define W_MAX_BUFFER_SIZE 4096
 #endif
 
 #define WOLF_MAJOR_VERSION 2    // Making incompatible API changes
@@ -94,39 +105,91 @@ extern "C" {
 #define WOLF_PATCH_VERSION 0    // bug fixes
 #define WOLF_DEBUG_VERSION 0    // for debugging
 
-typedef enum
-{
-    W_PASSED = 0,
-    W_FAILED = 1,
-    W_INVALIDARG,
-    W_OUTOFMEMORY,
-    W_INVALID,
-	W_INCOMPLETE
-} W_RESULT;
+#ifndef W_SUCCESS
+#define W_SUCCESS 0
+#endif
+
+#ifndef W_FAILURE
+#define W_FAILURE APR_EGENERAL
+#endif
 
 typedef void (*w_job)(void*);
+typedef int W_RESULT;
+//typedef apr_off_t w_offset;
+
+typedef
+#ifdef W_PLATFORM_WIN
+__int64
+#elif defined W_PLATFORM_OSX
+__darwin_off_t
+#else
+
+#endif
+w_offset;
+
+typedef struct apr_pool_t* w_mem_pool;
+typedef struct apr_file_t* w_file;
+typedef struct apr_finfo_t* w_file_info;
+typedef struct apr_array_header_t* w_array;
+typedef struct apr_hash_t* w_hash;
 
 /**
  * initialize wolf
  * @return W_RESULT as a result
 */
+W_SYSTEM_EXPORT
 W_RESULT wolf_initialize(void);
 
 /**
  * get default memory pool
- * @return apr memory pool
+ * @return memory pool
 */
-apr_pool_t* w_get_default_memory_pool(void);
+W_SYSTEM_EXPORT
+w_mem_pool w_get_default_memory_pool(void);
 
 /**
- * allocate memory
+ * create memory pool
+ * @return memory pool
+*/
+W_SYSTEM_EXPORT
+w_mem_pool w_create_memory_pool(void);
+
+/**
+ * allocate memory from default memory pool
+ * @param pMemSize the size of memory
+ * @param pTraceInfo trace infomation
  * @return memory in void pointer
 */
-void* w_alloc(_In_ const size_t pSize);
+W_SYSTEM_EXPORT
+void* w_malloc(_In_ const size_t pMemSize, _In_z_ const char* pTraceInfo);
+
+/**
+ * free memory from default memory pool
+ * @param pMem the memory which is need to be free
+*/
+W_SYSTEM_EXPORT
+void w_free(_In_ const void* pMem);
+
+/**
+ * initialize a string
+ * @param pSource the constant string
+ * @return allocated string from default memory pool
+*/
+W_SYSTEM_EXPORT
+char* w_string(_In_ const char* pSource);
+
+/**
+ * initialize a string
+ * @param pNumberOfArgs the number of argumans
+ * @return concated string
+*/
+W_SYSTEM_EXPORT
+char* w_string_concat(_In_ const int pNumberOfArgs, ...);
 
 /**
  * release all resources of wolf
 */
+W_SYSTEM_EXPORT
 void wolf_terminate(void);
 
 #ifdef __cplusplus
