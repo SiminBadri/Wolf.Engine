@@ -217,7 +217,7 @@ w_file_info w_io_file_get_info_from_path(_In_z_ const char* pPath)
     }
     
     apr_status_t _ret = apr_stat(_info, pPath, APR_FINFO_NORM, _pool);
-    if (_ret == APR_SUCCESS) return _info;
+    if (_ret == APR_SUCCESS) return _info
     
     return NULL;
 }
