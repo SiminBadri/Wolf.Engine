@@ -32,29 +32,29 @@ struct png_context {
 };
 
 w_file w_io_file_create(_In_z_  const char* pPath,
-                        _In_z_  const char* pContent,
-                        _In_    bool pBinaryMode,
-                        _In_    bool pBufferedMode,
-                        _In_    bool pNoneBlockMode,
-                        _In_    bool pMultiThreadedMode,
-                        _In_    bool pOpenAppendMode,
-                        _In_    bool pIsLargFile,
-                        _In_    bool pErrorIfFileExists)
+    _In_z_  const char* pContent,
+    _In_    bool pBinaryMode,
+    _In_    bool pBufferedMode,
+    _In_    bool pNoneBlockMode,
+    _In_    bool pMultiThreadedMode,
+    _In_    bool pOpenAppendMode,
+    _In_    bool pIsLargFile,
+    _In_    bool pErrorIfFileExists)
 {
     apr_status_t _ret = APR_SUCCESS;
     apr_file_t* _file = NULL;
     apr_size_t  _buffer_len = 0;
     apr_int32_t _flags = 0;
     w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
+    if (!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
         return NULL;
     }
-    
+
     _flags = APR_FOPEN_CREATE | // create file if not there
-             APR_FOPEN_WRITE;   // open for writing
-    
+        APR_FOPEN_WRITE;   // open for writing
+
     if (pBinaryMode)
     {
         _flags |= APR_FOPEN_BINARY; // binary mode (ignored on UNIX)
@@ -81,9 +81,9 @@ w_file w_io_file_create(_In_z_  const char* pPath,
     }
     if (pErrorIfFileExists)
     {
-         _flags |= APR_FOPEN_EXCL; // binary mode (ignored on UNIX)
+        _flags |= APR_FOPEN_EXCL; // binary mode (ignored on UNIX)
     }
-    
+
     _ret = apr_file_open(
         &_file, // new file handle
         pPath, // file name
@@ -97,34 +97,34 @@ w_file w_io_file_create(_In_z_  const char* pPath,
     }
     _buffer_len = strlen(pContent);
     _ret = apr_file_write(_file, pContent, &_buffer_len);
-    
+
     return _file;
 }
 
 W_RESULT w_io_file_save(_In_z_  const char* pPath,
-                        _In_z_  const char* pContent,
-                        _In_    bool pBinaryMode,
-                        _In_    bool pBufferedMode,
-                        _In_    bool pNoneBlockMode,
-                        _In_    bool pMultiThreadedMode,
-                        _In_    bool pOpenAppendMode,
-                        _In_    bool pIsLargFile,
-                        _In_    bool pErrorIfFileExists)
+    _In_z_  const char* pContent,
+    _In_    bool pBinaryMode,
+    _In_    bool pBufferedMode,
+    _In_    bool pNoneBlockMode,
+    _In_    bool pMultiThreadedMode,
+    _In_    bool pOpenAppendMode,
+    _In_    bool pIsLargFile,
+    _In_    bool pErrorIfFileExists)
 {
     apr_status_t _ret = APR_SUCCESS;
     apr_file_t* _file = NULL;
     apr_size_t  _buffer_len = 0;
     apr_int32_t _flags = 0;
     w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
+    if (!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
         goto out;
     }
-    
+
     _flags = APR_FOPEN_CREATE | // create file if not there
-             APR_FOPEN_WRITE;   // open for writing
-    
+        APR_FOPEN_WRITE;   // open for writing
+
     if (pBinaryMode)
     {
         _flags |= APR_FOPEN_BINARY; // binary mode (ignored on UNIX)
@@ -151,9 +151,9 @@ W_RESULT w_io_file_save(_In_z_  const char* pPath,
     }
     if (pErrorIfFileExists)
     {
-         _flags |= APR_FOPEN_EXCL; // binary mode (ignored on UNIX)
+        _flags |= APR_FOPEN_EXCL; // binary mode (ignored on UNIX)
     }
-    
+
     _ret = apr_file_open(
         &_file, // new file handle
         pPath, // file name
@@ -167,7 +167,7 @@ W_RESULT w_io_file_save(_In_z_  const char* pPath,
     }
     _buffer_len = strlen(pContent);
     _ret = apr_file_write(_file, pContent, &_buffer_len);
-    
+
 out:
     if (_file)
     {
@@ -203,22 +203,22 @@ W_RESULT w_io_file_check_is_file(_In_z_ const char* pPath)
 w_file_info w_io_file_get_info_from_path(_In_z_ const char* pPath)
 {
     w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
+    if (!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_get_file_info_from_path");
         return NULL;
     }
-    
+
     apr_finfo_t* _info = apr_palloc(_pool, sizeof(apr_finfo_t));
-    if(!_info)
+    if (!_info)
     {
         W_ASSERT(false, "could not allocate memory for apr_finfo_t. trace info: w_io_get_file_info_from_path");
         return NULL;
     }
-    
+
     apr_status_t _ret = apr_stat(_info, pPath, APR_FINFO_NORM, _pool);
     if (_ret == APR_SUCCESS) return _info;
-    
+
     return NULL;
 }
 
@@ -230,19 +230,19 @@ w_file_info w_io_file_get_info_from_path(_In_z_ const char* pPath)
 w_file_info w_io_file_get_info(_In_ w_file pFile)
 {
     w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
+    if (!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_get_file_info");
         return NULL;
     }
-    
+
     apr_finfo_t* _info = apr_palloc(_pool, sizeof(apr_finfo_t));
-    if(!_info)
+    if (!_info)
     {
         W_ASSERT(false, "could not allocate memory for apr_finfo_t. trace info: w_io_get_file_info");
         return NULL;
     }
-    
+
     apr_status_t _ret = apr_file_info_get(_info, APR_FINFO_NORM, pFile);
     if (_ret == APR_SUCCESS) return _info;
 
@@ -252,7 +252,7 @@ w_file_info w_io_file_get_info(_In_ w_file pFile)
 const char* w_io_file_get_extension_from_path(_In_z_ const char* pFilePath)
 {
     const char* _dot = strrchr(pFilePath, '.');
-    if(!_dot || _dot == pFilePath) return "";
+    if (!_dot || _dot == pFilePath) return "";
     return _dot + 1;
 }
 
@@ -276,14 +276,14 @@ const char* w_io_file_get_name_from_path(_In_z_ const char* pPath)
             break;
         }
     }
-    
+
     if (_index == -1) return "";
     _index++;
 
     char* _dst_str = w_malloc(_index, "w_io_get_base_file_name_from_path");
-    apr_cpystrn(_dst_str, pPath,_index);
+    apr_cpystrn(_dst_str, pPath, _index);
     _dst_str[_index] = '\0';
-    
+
     return _dst_str;
 }
 
@@ -307,7 +307,7 @@ const char* w_io_file_get_basename_from_path(_In_z_ const char* pFilePath)
 #endif
 }
 
-const char*	w_io_file_get_basename(_In_ w_file pFile)
+const char* w_io_file_get_basename(_In_ w_file pFile)
 {
     apr_finfo_t* _info = w_io_file_get_info(pFile);
     if (!_info) return NULL;
@@ -335,12 +335,12 @@ w_file_istream w_io_file_read_full_from_path(_In_z_ const char* pPath)
 w_file_istream w_io_file_read_nbytes_from_path(_In_z_ const char* pPath, _In_ size_t pNBytes)
 {
     w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
+    if (!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_file_read_nbytes_from_path");
         return NULL;
     }
-    
+
     w_file_istream _istream = w_malloc(sizeof(w_file_input_stream), "w_io_file_read_nbytes_from_path");
     if (!_istream)
     {
@@ -348,10 +348,10 @@ w_file_istream w_io_file_read_nbytes_from_path(_In_z_ const char* pPath, _In_ si
     }
     apr_file_t* _file = NULL;
     apr_status_t _ret = apr_file_open(&_file,
-                       pPath,
-                       APR_READ,
-                       APR_OS_DEFAULT,
-                       _pool);
+        pPath,
+        APR_READ,
+        APR_OS_DEFAULT,
+        _pool);
     if (_ret == APR_SUCCESS)
     {
         //read it all
@@ -383,24 +383,24 @@ w_file_istream	w_io_file_read_nbytes(_In_ w_file pFile, _In_ size_t pNBytes)
     }
 
     w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
+    if (!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_file_read_nbytes");
         return NULL;
     }
-    
+
     w_file_istream _istream = w_malloc(sizeof(w_file_input_stream), "w_io_file_read_nbytes");
     if (!_istream)
     {
         return NULL;
     }
-    
+
     //read it all
     _istream->size = apr_file_buffer_size_get(pFile);
     _istream->bytes_read = pNBytes;
     apr_file_read(pFile, _istream->buffer, &_istream->bytes_read);
     apr_file_close(pFile);
-    
+
     return _istream;
 }
 
@@ -411,9 +411,9 @@ W_RESULT	w_io_file_delete_from_path(_In_ const char* pPath)
         W_ASSERT(false, "pPath is NULL. trace info: w_io_file_delete_from_path");
         return W_FAILURE;
     }
-    
+
     w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
+    if (!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_file_delete_from_path");
         return W_FAILURE;
@@ -430,7 +430,7 @@ W_RESULT	w_io_file_delete(_In_ w_file pFile)
         return W_FAILURE;
     }
     w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
+    if (!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_delete_file_with_file");
         return W_FAILURE;
@@ -453,12 +453,12 @@ void w_io_dir_get_current(_Inout_z_ char* pPath)
 W_RESULT	w_io_dir_check_is_directory(_In_z_ const char* pPath)
 {
     w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
+    if (!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_get_is_directory");
         return W_FAILURE;
     }
-    
+
     //open a directory
     apr_dir_t* _dir = NULL;
     apr_status_t _ret = apr_dir_open(&_dir, pPath, _pool);
@@ -490,212 +490,225 @@ const char* w_io_dir_get_parent(_In_z_ const char* pPath)
 W_RESULT	w_io_dir_create(_In_z_ const char* pPath)
 {
     w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
+    if (!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
         return W_FAILURE;
     }
-    
+
     //create a directory
     apr_status_t _ret = apr_dir_make_recursive(pPath, APR_OS_DEFAULT, _pool);
     return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 W_RESULT	w_io_utf8_to_ucs2(
-	char* in,
-	size_t* inbytes,
-	uint16_t* out,
-	size_t* outwords)
+    char* in,
+    size_t* inbytes,
+    uint16_t* out,
+    size_t* outwords)
 {
-	apr_int64_t newch, mask;
-	apr_size_t expect, eating;
-	int ch;
+    apr_int64_t newch, mask;
+    apr_size_t expect, eating;
+    int ch;
 
-	while (*inbytes && *outwords)
-	{
-		ch = (unsigned char)(*in++);
-		if (!(ch & 0200)) {
-			/* US-ASCII-7 plain text
-			 */
-			--* inbytes;
-			--* outwords;
-			*(out++) = ch;
-		}
-		else
-		{
-			if ((ch & 0300) != 0300) {
-				/* Multibyte Continuation is out of place
-				 */
-				return APR_BADARG;
-			}
-			else
-			{
-				/* Multibyte Sequence Lead Character
-				 *
-				 * Compute the expected bytes while adjusting
-				 * or lead byte and leading zeros mask.
-				 */
-				mask = 0340;
-				expect = 1;
-				while ((ch & mask) == mask) {
-					mask |= mask >> 1;
-					if (++expect > 3) /* (truly 5 for ucs-4) */
-						return APR_BADARG;
-				}
-				newch = ch & ~mask;
-				eating = expect + 1;
-				if (*inbytes <= expect)
-					return APR_BADARG;
-				/* Reject values of excessive leading 0 bits
-				 * utf-8 _demands_ the shortest possible byte length
-				 */
-				if (expect == 1) {
-					if (!(newch & 0036))
-						return APR_BADARG;
-				}
-				else {
-					/* Reject values of excessive leading 0 bits
-					 */
-					if (!newch && !((unsigned char)* in & 0077 & (mask << 1)))
-						return APR_BADARG;
-					if (expect == 2) {
-						/* Reject values D800-DFFF when not utf16 encoded
-						 * (may not be an appropriate restriction for ucs-4)
-						 */
-						if (newch == 0015 && ((unsigned char)* in & 0040))
-							return APR_BADARG;
-					}
-					else if (expect == 3) {
-						/* Short circuit values > 110000
-						 */
-						if (newch > 4)
-							return APR_BADARG;
-						if (newch == 4 && ((unsigned char)* in & 0060))
-							return APR_BADARG;
-					}
-				}
-				/* Where the boolean (expect > 2) is true, we will need
-				 * an extra word for the output.
-				 */
-				if (*outwords < (apr_size_t)(expect > 2) + 1)
-					break; /* buffer full */
-				while (expect--)
-				{
-					/* Multibyte Continuation must be legal */
-					if (((ch = (unsigned char) * (in++)) & 0300) != 0200)
-						return APR_BADARG;
-					newch <<= 6;
-					newch |= (ch & 0077);
-				}
-				*inbytes -= eating;
-				/* newch is now a true ucs-4 character
-				 *
-				 * now we need to fold to ucs-2
-				 */
-				if (newch < 0x10000)
-				{
-					--* outwords;
-					*(out++) = (apr_uint16_t)newch;
-				}
-				else
-				{
-					*outwords -= 2;
-					newch -= 0x10000;
-					*(out++) = (apr_uint16_t)(0xD800 | (newch >> 10));
-					*(out++) = (apr_uint16_t)(0xDC00 | (newch & 0x03FF));
-				}
-			}
-		}
-	}
-	/* Buffer full 'errors' aren't errors, the client must inspect both
-	 * the inbytes and outwords values
-	 */
-	return W_SUCCESS;
+    while (*inbytes && *outwords)
+    {
+        ch = (unsigned char)(*in++);
+        if (!(ch & 0200)) {
+            /* US-ASCII-7 plain text
+             */
+            --* inbytes;
+            --* outwords;
+            *(out++) = ch;
+        }
+        else
+        {
+            if ((ch & 0300) != 0300) {
+                /* Multibyte Continuation is out of place
+                 */
+                return APR_BADARG;
+            }
+            else
+            {
+                /* Multibyte Sequence Lead Character
+                 *
+                 * Compute the expected bytes while adjusting
+                 * or lead byte and leading zeros mask.
+                 */
+                mask = 0340;
+                expect = 1;
+                while ((ch & mask) == mask) {
+                    mask |= mask >> 1;
+                    if (++expect > 3) /* (truly 5 for ucs-4) */
+                        return APR_BADARG;
+                }
+                newch = ch & ~mask;
+                eating = expect + 1;
+                if (*inbytes <= expect)
+                    return APR_BADARG;
+                /* Reject values of excessive leading 0 bits
+                 * utf-8 _demands_ the shortest possible byte length
+                 */
+                if (expect == 1) {
+                    if (!(newch & 0036))
+                        return APR_BADARG;
+                }
+                else {
+                    /* Reject values of excessive leading 0 bits
+                     */
+                    if (!newch && !((unsigned char)*in & 0077 & (mask << 1)))
+                        return APR_BADARG;
+                    if (expect == 2) {
+                        /* Reject values D800-DFFF when not utf16 encoded
+                         * (may not be an appropriate restriction for ucs-4)
+                         */
+                        if (newch == 0015 && ((unsigned char)*in & 0040))
+                            return APR_BADARG;
+                    }
+                    else if (expect == 3) {
+                        /* Short circuit values > 110000
+                         */
+                        if (newch > 4)
+                            return APR_BADARG;
+                        if (newch == 4 && ((unsigned char)*in & 0060))
+                            return APR_BADARG;
+                    }
+                }
+                /* Where the boolean (expect > 2) is true, we will need
+                 * an extra word for the output.
+                 */
+                if (*outwords < (apr_size_t)(expect > 2) + 1)
+                    break; /* buffer full */
+                while (expect--)
+                {
+                    /* Multibyte Continuation must be legal */
+                    if (((ch = (unsigned char)*(in++)) & 0300) != 0200)
+                        return APR_BADARG;
+                    newch <<= 6;
+                    newch |= (ch & 0077);
+                }
+                *inbytes -= eating;
+                /* newch is now a true ucs-4 character
+                 *
+                 * now we need to fold to ucs-2
+                 */
+                if (newch < 0x10000)
+                {
+                    --* outwords;
+                    *(out++) = (apr_uint16_t)newch;
+                }
+                else
+                {
+                    *outwords -= 2;
+                    newch -= 0x10000;
+                    *(out++) = (apr_uint16_t)(0xD800 | (newch >> 10));
+                    *(out++) = (apr_uint16_t)(0xDC00 | (newch & 0x03FF));
+                }
+            }
+        }
+    }
+    /* Buffer full 'errors' aren't errors, the client must inspect both
+     * the inbytes and outwords values
+     */
+    return W_SUCCESS;
 }
 
 W_RESULT w_io_ucs2_to_utf8(
-	uint16_t* in,
-	size_t* inwords,
-	char* out,
-	size_t* outbytes)
+    uint16_t* in,
+    size_t* inwords,
+    char* out,
+    size_t* outbytes)
 {
-	apr_int64_t newch, require;
-	apr_size_t need;
-	char* invout;
-	int ch;
+    apr_int64_t newch, require;
+    apr_size_t need;
+    char* invout;
+    int ch;
 
-	while (*inwords && *outbytes)
-	{
-		ch = (unsigned short)(*in++);
-		if (ch < 0x80)
-		{
-			--* inwords;
-			--* outbytes;
-			*(out++) = (unsigned char)ch;
-		}
-		else
-		{
-			if ((ch & 0xFC00) == 0xDC00) {
-				/* Invalid Leading ucs-2 Multiword Continuation Character
-				 */
-				return APR_BADARG;
-			}
-			if ((ch & 0xFC00) == 0xD800) {
-				/* Leading ucs-2 Multiword Character
-				 */
-				if (*inwords < 2) {
-					/* Missing ucs-2 Multiword Continuation Character
-					 */
-					return APR_BADARG;
-				}
-				if (((unsigned short)(*in) & 0xFC00) != 0xDC00) {
-					/* Invalid ucs-2 Multiword Continuation Character
-					 */
-					return APR_BADARG;
-				}
-				newch = (ch & 0x03FF) << 10 | ((unsigned short)(*in++) & 0x03FF);
-				newch += 0x10000;
-			}
-			else {
-				/* ucs-2 Single Word Character
-				 */
-				newch = ch;
-			}
-			/* Determine the absolute minimum utf-8 bytes required
-			 */
-			require = newch >> 11;
-			need = 1;
-			while (require)
+    while (*inwords && *outbytes)
+    {
+        ch = (unsigned short)(*in++);
+        if (ch < 0x80)
+        {
+            --* inwords;
+            --* outbytes;
+            *(out++) = (unsigned char)ch;
+        }
+        else
+        {
+            if ((ch & 0xFC00) == 0xDC00) {
+                /* Invalid Leading ucs-2 Multiword Continuation Character
+                 */
+                return APR_BADARG;
+            }
+            if ((ch & 0xFC00) == 0xD800) {
+                /* Leading ucs-2 Multiword Character
+                 */
+                if (*inwords < 2) {
+                    /* Missing ucs-2 Multiword Continuation Character
+                     */
+                    return APR_BADARG;
+                }
+                if (((unsigned short)(*in) & 0xFC00) != 0xDC00) {
+                    /* Invalid ucs-2 Multiword Continuation Character
+                     */
+                    return APR_BADARG;
+                }
+                newch = (ch & 0x03FF) << 10 | ((unsigned short)(*in++) & 0x03FF);
+                newch += 0x10000;
+            }
+            else {
+                /* ucs-2 Single Word Character
+                 */
+                newch = ch;
+            }
+            /* Determine the absolute minimum utf-8 bytes required
+             */
+            require = newch >> 11;
+            need = 1;
+            while (require)
                 (void)(require >>= 5), ++need;
-			if (need >= *outbytes)
-				break; /* Insufficient buffer */
-			*inwords -= (need > 2) + 1;
-			*outbytes -= need + 1;
-			/* Compute the utf-8 characters in last to first order,
-			 * calculating the lead character length bits along the way.
-			 */
-			ch = 0200;
-			out += need + 1;
-			invout = out;
-			while (need--) {
-				ch |= ch >> 1;
-				*(--invout) = (unsigned char)(0200 | (newch & 0077));
-				newch >>= 6;
-			}
-			/* Compute the lead utf-8 character and move the dest offset
-			 */
-			*(--invout) = (unsigned char)(ch | newch);
-		}
-	}
-	/* Buffer full 'errors' aren't errors, the client must inspect both
-	 * the inwords and outbytes values
-	 */
-	return W_SUCCESS;
+            if (need >= *outbytes)
+                break; /* Insufficient buffer */
+            *inwords -= (need > 2) + 1;
+            *outbytes -= need + 1;
+            /* Compute the utf-8 characters in last to first order,
+             * calculating the lead character length bits along the way.
+             */
+            ch = 0200;
+            out += need + 1;
+            invout = out;
+            while (need--) {
+                ch |= ch >> 1;
+                *(--invout) = (unsigned char)(0200 | (newch & 0077));
+                newch >>= 6;
+            }
+            /* Compute the lead utf-8 character and move the dest offset
+             */
+            *(--invout) = (unsigned char)(ch | newch);
+        }
+    }
+    /* Buffer full 'errors' aren't errors, the client must inspect both
+     * the inwords and outbytes values
+     */
+    return W_SUCCESS;
 }
 
 long w_io_to_hex(_In_z_ const char* pHexStr)
 {
     return strtol(pHexStr, NULL, 16);
+}
+
+W_RESULT w_io_LPCWSTR_to_LPCSTR(
+    _In_	LPCWSTR pIn,
+    _In_	size_t pInLen,
+    _Out_	LPCSTR* pOut,
+    _Out_	size_t* pOutLen)
+{
+    (*pOutLen) = pInLen + 1; // +1 for null terminator
+    (*pOut) = (LPCSTR)w_malloc((*pOutLen), "w_io_LPCWSTR_to_LPCSTR");
+    size_t charsConverted = 0;
+
+    return wcstombs_s(&charsConverted, (*pOut), (*pOutLen), pIn, pInLen);
 }
 
 W_RESULT w_io_string_has_start_with(_In_z_ const char* pString, _In_z_ const char* pStartWith)
@@ -707,7 +720,7 @@ W_RESULT w_io_string_has_end_with(_In_z_ const char* pString, _In_z_ const char*
 {
     size_t _str_size = strlen(pString);
     size_t _str_end_size = strlen(pEndWith);
-    
+
     if (_str_size >= _str_end_size)
     {
         return strncmp(pString + _str_size - _str_end_size, pEndWith, _str_end_size) == 0;
@@ -724,7 +737,7 @@ W_RESULT w_io_wstring_has_end_with(_In_z_ const wchar_t* pString, _In_z_ const w
 {
     size_t _str_size = wcslen(pString);
     size_t _str_end_size = wcslen(pEndWith);
-    
+
     if (_str_size >= _str_end_size)
     {
         return wcsncmp(pString + _str_size - _str_end_size, pEndWith, _str_end_size) == 0;
@@ -733,8 +746,8 @@ W_RESULT w_io_wstring_has_end_with(_In_z_ const wchar_t* pString, _In_z_ const w
 }
 
 W_RESULT w_io_string_split(_In_z_ char* pString,
-                           _In_z_ const char* pSplit,
-                           _Out_ w_array* pResults)
+    _In_z_ const char* pSplit,
+    _Out_ w_array* pResults)
 {
     w_mem_pool _mem_pool = w_mem_pool_get_default();
     if (!_mem_pool)
@@ -747,7 +760,7 @@ W_RESULT w_io_string_split(_In_z_ char* pString,
     {
         w_free(*pResults);
     }
-     apr_array_header_t *temp;
+    apr_array_header_t* temp;
     temp = ((apr_array_header_t*)&pResults);
     temp = apr_array_make(_mem_pool, 32, sizeof(const char*));
     if (!*pResults)
@@ -758,63 +771,63 @@ W_RESULT w_io_string_split(_In_z_ char* pString,
 
     char* _splits = strtok(pString, pSplit);
     // loop through the string and extract all other splits
-    while( _splits != NULL )
+    while (_splits != NULL)
     {
         *(const char**)apr_array_push(temp) = _splits;
-       _splits = strtok(NULL, pSplit);
+        _splits = strtok(NULL, pSplit);
     }
-    
+
     return W_SUCCESS;
 }
 
 size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
-                       _In_z_ char* pSourceBuffer,
-                       _In_z_ size_t pSourceBufferLenght,
-                       _In_ base_64_mode pEncodeMode)
+    _In_z_ char* pSourceBuffer,
+    _In_z_ size_t pSourceBufferLenght,
+    _In_ base_64_mode pEncodeMode)
 {
     size_t _encoded_size = 0;
     switch (pEncodeMode)
     {
-        case chromium:
-            _encoded_size = chromium_base64_encode(
-                *pDestinationBuffer,
-                pSourceBuffer,
-                pSourceBufferLenght);
-            break;
-        case klomp_avx:
-            klomp_avx2_base64_encode(
-                pSourceBuffer,
-                pSourceBufferLenght,
-                *pDestinationBuffer,
-                &_encoded_size);
-            break;
-        case fast_avx:
-            _encoded_size = fast_avx2_base64_encode(
-                *pDestinationBuffer,
-                pSourceBuffer,
-                pSourceBufferLenght);
-            break;
-        case fast_avx512:
+    case chromium:
+        _encoded_size = chromium_base64_encode(
+            *pDestinationBuffer,
+            pSourceBuffer,
+            pSourceBufferLenght);
+        break;
+    case klomp_avx:
+        klomp_avx2_base64_encode(
+            pSourceBuffer,
+            pSourceBufferLenght,
+            *pDestinationBuffer,
+            &_encoded_size);
+        break;
+    case fast_avx:
+        _encoded_size = fast_avx2_base64_encode(
+            *pDestinationBuffer,
+            pSourceBuffer,
+            pSourceBufferLenght);
+        break;
+    case fast_avx512:
 #if USE_AVX512 != 0 && ((defined(_MSC_VER) && _MSC_VER >= 1911) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1600) || (defined(__clang__) && __clang_major__ >= 4) || (defined(__GNUC__) && __GNUC__ >= 5))
-            _encoded_size = fast_avx512bw_base64_encode(
-                pDestinationBuffer,
-                pSourceBuffer,
-                pSourceBufferLenght);
+        _encoded_size = fast_avx512bw_base64_encode(
+            pDestinationBuffer,
+            pSourceBuffer,
+            pSourceBufferLenght);
 #endif
-            break;
-        case quick_time:
-            _encoded_size = (size_t)(quicktime_base64_encode(
-                *pDestinationBuffer,
-                pSourceBuffer,
-                (int)pSourceBufferLenght));
-            break;
-        case scalar:
-            scalar_base64_encode(
-                pSourceBuffer,
-                pSourceBufferLenght,
-                *pDestinationBuffer,
-                &_encoded_size);
-            break;
+        break;
+    case quick_time:
+        _encoded_size = (size_t)(quicktime_base64_encode(
+            *pDestinationBuffer,
+            pSourceBuffer,
+            (int)pSourceBufferLenght));
+        break;
+    case scalar:
+        scalar_base64_encode(
+            pSourceBuffer,
+            pSourceBufferLenght,
+            *pDestinationBuffer,
+            &_encoded_size);
+        break;
     }
     return _encoded_size;
 }
@@ -828,7 +841,7 @@ W_RESULT w_io_file_is_jpeg(_In_ const char* pFilePath)
 W_RESULT w_io_stream_is_jpeg(_In_ w_file_istream pFileStream)
 {
     tjhandle _tj_handle = tjInitDecompress();
-    
+
     if (!_tj_handle)
     {
         return W_FAILURE;
@@ -836,30 +849,30 @@ W_RESULT w_io_stream_is_jpeg(_In_ w_file_istream pFileStream)
 
     int _width, _height, _sub_sample, _color_space;
     W_RESULT _rt = tjDecompressHeader3(_tj_handle,
-                                       pFileStream->buffer,
-                                       pFileStream->bytes_read,
-                                       &_width,
-                                       &_height,
-                                       &_sub_sample,
-                                       &_color_space);
+        pFileStream->buffer,
+        pFileStream->bytes_read,
+        &_width,
+        &_height,
+        &_sub_sample,
+        &_color_space);
     tjDestroy(_tj_handle);
-    
+
     return _rt;
 }
 
 W_RESULT w_io_pixels_from_jpeg_stream(_In_z_   const uint8_t* pJpegStream,
-                                      _In_     size_t pJpegStreamLen,
-                                      _In_     w_jpeg_pixel_format pPixelFormat,
-                                      _Out_    int* pWidth,
-                                      _Out_    int* pHeight,
-                                      _Out_    int* pSubSample,
-                                      _Out_    int* pColorSpace,
-                                      _Out_    int* pNumberOfPasses,
-                                      _Out_    uint8_t** pPixels)
+    _In_     size_t pJpegStreamLen,
+    _In_     w_jpeg_pixel_format pPixelFormat,
+    _Out_    int* pWidth,
+    _Out_    int* pHeight,
+    _Out_    int* pSubSample,
+    _Out_    int* pColorSpace,
+    _Out_    int* pNumberOfPasses,
+    _Out_    uint8_t** pPixels)
 {
     W_RESULT _rt;
     tjhandle _tj_handle = NULL;
-    
+
     if (pPixelFormat == TJPF_UNKNOWN)
     {
         _rt = APR_BADARG;
@@ -874,12 +887,12 @@ W_RESULT w_io_pixels_from_jpeg_stream(_In_z_   const uint8_t* pJpegStream,
     }
 
     if ((_rt = tjDecompressHeader3(_tj_handle,
-                                   pJpegStream,
-                                   pJpegStreamLen,
-                                   pWidth,
-                                   pHeight,
-                                   pSubSample,
-                                   pColorSpace)))
+        pJpegStream,
+        pJpegStreamLen,
+        pWidth,
+        pHeight,
+        pSubSample,
+        pColorSpace)))
     {
         _rt = tjGetErrorCode(_tj_handle);
         W_ASSERT_P(false, "tjDecompressHeader3 failed. error code %d . error message %s .trace info: w_io_pixels_from_jpeg_stream", _rt, tjGetErrorStr2(_tj_handle));
@@ -889,12 +902,12 @@ W_RESULT w_io_pixels_from_jpeg_stream(_In_z_   const uint8_t* pJpegStream,
     int _comp;
     switch (pPixelFormat)
     {
-        default:
-            _comp = 4;
-        case TJPF_RGB:
-        case TJPF_BGR:
-            _comp = 3;
-            break;
+    default:
+        _comp = 4;
+    case TJPF_RGB:
+    case TJPF_BGR:
+        _comp = 3;
+        break;
     }
 
     size_t _memory_size = (size_t)_comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t);
@@ -918,24 +931,24 @@ out:
 }
 
 W_RESULT w_io_pixels_from_jpeg_file(_In_z_   const char* pJpegFile,
-                                    _In_     w_jpeg_pixel_format pPixelFormat,
-                                    _Out_    int* pWidth,
-                                    _Out_    int* pHeight,
-                                    _Out_    int* pSubSample,
-                                    _Out_    int* pColorSpace,
-                                    _Out_    int* pNumberOfPasses,
-                                    _Out_    uint8_t** pPixels)
+    _In_     w_jpeg_pixel_format pPixelFormat,
+    _Out_    int* pWidth,
+    _Out_    int* pHeight,
+    _Out_    int* pSubSample,
+    _Out_    int* pColorSpace,
+    _Out_    int* pNumberOfPasses,
+    _Out_    uint8_t** pPixels)
 {
     w_file_istream _istream = w_io_file_read_full_from_path(pJpegFile);
     return w_io_pixels_from_jpeg_stream((const uint8_t*)_istream->buffer,
-                                        _istream->bytes_read,
-                                        pPixelFormat,
-                                        pWidth,
-                                        pHeight,
-                                        pSubSample,
-                                        pColorSpace,
-                                        pNumberOfPasses,
-                                        pPixels);
+        _istream->bytes_read,
+        pPixelFormat,
+        pWidth,
+        pHeight,
+        pSubSample,
+        pColorSpace,
+        pNumberOfPasses,
+        pPixels);
 }
 
 W_RESULT w_io_stream_is_png(_In_ w_file_istream pFileStream)
@@ -971,15 +984,15 @@ static  void _png_user_read_data(
 }
 
 W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
-                                     _In_   w_png_pixel_format pPixelFormat,
-                                     _Out_  int* pWidth,
-                                     _Out_  int* pHeight,
-                                     _Out_  uint8_t* pColorType,
-                                     _Out_  uint8_t* pBitDepth,
-                                     _Out_  int* pNumberOfPasses,
-                                     _Out_  uint8_t** pPixels)
+    _In_   w_png_pixel_format pPixelFormat,
+    _Out_  int* pWidth,
+    _Out_  int* pHeight,
+    _Out_  uint8_t* pColorType,
+    _Out_  uint8_t* pBitDepth,
+    _Out_  int* pNumberOfPasses,
+    _Out_  uint8_t** pPixels)
 {
-    if(png_sig_cmp(pFileStream->buffer, 0, PNG_BYTES_TO_CHECK))
+    if (png_sig_cmp(pFileStream->buffer, 0, PNG_BYTES_TO_CHECK))
     {
         W_ASSERT(false, "file stream does not contain png data. trace info: w_io_pixels_from_png_stream::png_sig_cmp");
         return APR_BADARG;
@@ -1007,7 +1020,7 @@ W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
     if (setjmp(png_jmpbuf(_png_ptr)))
     {
         png_destroy_read_struct(&_png_ptr, &_info_ptr, (png_infopp)0);
-        
+
         W_ASSERT(false, "failed on setjmp. trace info: w_io_pixels_from_png_stream::setjmp");
         return W_FAILURE;
     }
@@ -1080,8 +1093,8 @@ W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
         w_free(*pPixels);
     }
     (*pPixels) = (uint8_t*)w_malloc(_comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t),
-                                  "w_io_pixels_from_png_stream");
-    
+        "w_io_pixels_from_png_stream");
+
     size_t _bytes_per_row = png_get_rowbytes(_png_ptr, _info_ptr);
     uint8_t* _raw_data = (uint8_t*)w_malloc(_bytes_per_row, "w_io_pixels_from_png_stream");
 
@@ -1189,28 +1202,28 @@ W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
 
     png_destroy_read_struct(&_png_ptr, &_info_ptr, (png_infopp)0);
     w_free(_raw_data);
-    
+
     return W_SUCCESS;
 }
 
 W_RESULT w_io_pixels_from_png_file(_In_   const char* pFilePath,
-                                   _In_   w_png_pixel_format pPixelFormat,
-                                   _Out_  int* pWidth,
-                                   _Out_  int* pHeight,
-                                   _Out_  uint8_t* pColorType,
-                                   _Out_  uint8_t* pBitDepth,
-                                   _Out_  int* pNumberOfPasses,
-                                   _Out_  uint8_t** pPixels)
+    _In_   w_png_pixel_format pPixelFormat,
+    _Out_  int* pWidth,
+    _Out_  int* pHeight,
+    _Out_  uint8_t* pColorType,
+    _Out_  uint8_t* pBitDepth,
+    _Out_  int* pNumberOfPasses,
+    _Out_  uint8_t** pPixels)
 {
     w_file_istream _fs = w_io_file_read_full_from_path(pFilePath);
     return w_io_pixels_from_png_stream(_fs,
-                                       pPixelFormat,
-                                       pWidth,
-                                       pHeight,
-                                       pColorType,
-                                       pBitDepth,
-                                       pNumberOfPasses,
-                                       pPixels);
+        pPixelFormat,
+        pWidth,
+        pHeight,
+        pColorType,
+        pBitDepth,
+        pNumberOfPasses,
+        pPixels);
 }
 
 //apr_dir_read(<#apr_finfo_t *finfo#>, <#apr_int32_t wanted#>, <#apr_dir_t *thedir#>)
@@ -1485,4 +1498,3 @@ W_RESULT w_io_pixels_from_png_file(_In_   const char* pFilePath,
 //            std::back_inserter(pData));
 //
 //    }
-
